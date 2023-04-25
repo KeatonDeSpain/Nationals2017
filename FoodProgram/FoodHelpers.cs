@@ -2,7 +2,7 @@
 {
     public static class FoodHelpers
     {
-        public static FoodOptions AddFoodToOrder(this FoodOptions order, int response)
+        public static Order AddFoodToOrder(this Order order, int response)
         {
             var newOrder = order;
             switch(response)

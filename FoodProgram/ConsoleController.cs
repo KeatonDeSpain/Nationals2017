@@ -4,38 +4,65 @@
     {
         static void Main(string[] args)
         {
-            FoodOptions order = new FoodOptions();
-            order = MainMenu(order);
+            List<Order> orders = new List<Order>();
+            Order order = new Order() { Id = 1 };
+            var newOrder = order;
+            while (true)
+            {
+                newOrder = MainMenu(newOrder);
+                if(newOrder == null) { break; }
+                if(orders.Find(item => item.Id == newOrder.Id) == null) { orders.Add(newOrder); }
+            }
+            orders.FindAll(item => item.AmountTotal() == 0).ForEach(item => orders.Remove(item));
+            orders.ForEach(item => Console.WriteLine(item.Id));
         }
-        private static FoodOptions MainMenu(FoodOptions order)
+
+        private static Order MainMenu(Order order)
         {
             Console.Clear();
             Console.WriteLine(Const.MENU);
             var response = ReadLine();
-            if (response > 1 && response < 7) { return order.AddFoodToOrder(response); }
-            HandleConsoleChoices(order, response);
-            return order;
+            if (response > 0 && response < 7) { return order.AddFoodToOrder(response); }
+            return HandleConsoleChoices(order, response);
         }
-
-        private static void HandleConsoleChoices(FoodOptions order, int response)
+        
+        private static Order HandleConsoleChoices(Order order, int response)
         {
             Console.Clear();
+            Order addOrder = order;
             switch(response)
             {
                 case 7:
                     Console.WriteLine(order.ToString());
-                    var total = order.AmountTotal;
-                    Console.WriteLine($"\nTotal: ${total}");
+                    var total = order.AmountTotal();
+                    Console.WriteLine($"Total: ${total}");
+                    addOrder = ConsoleNewOrder(order);
                     break;
                 case 8:
                     Console.WriteLine("Order cleared!");
-                    order = new FoodOptions();
+                    addOrder.ResetOrder();
                     break;
                 case 9:
                     Console.WriteLine("Thank you! Goodbye!");
-                    Environment.Exit(0);
-                    break;
+                    return null;
             }
+            Console.WriteLine("\nHit Enter to continue.");
+            Console.ReadLine();
+            return addOrder;
+        }
+
+        private static Order ConsoleNewOrder(Order currentOrder)
+        {
+            Console.WriteLine("\n\nWould you like to start a new order? (y/n)");
+            var response = Console.ReadLine().ToLower().Trim();
+            if(!response.Equals("y") && !response.Equals("n")) { Console.WriteLine("Not a valid response!"); return ConsoleNewOrder(currentOrder); }
+            if(response.Equals("y"))
+            {
+                Console.WriteLine("Thank you for your order!");
+                var id = currentOrder.Id + 1;
+                return new Order() { Id = id };
+            }
+            return currentOrder;
         }
 
         private static int ReadLine()

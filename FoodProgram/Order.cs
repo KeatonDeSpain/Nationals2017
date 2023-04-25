@@ -1,13 +1,24 @@
 ﻿namespace FoodProgram
 {
-    public class FoodOptions
+    public class Order
     {
+        public int Id { get; set; }
         public int HotDog { get; set; } = 0;
         public int Brat { get; set; } = 0;
         public int Hamburger { get; set; } = 0;
         public int Fries { get; set; } = 0;
         public int Soda { get; set; } = 0;
         public int Water { get; set; } = 0;
+
+        public void ResetOrder()
+        {
+            HotDog = 0;
+            Brat = 0;
+            Hamburger = 0;
+            Fries = 0; 
+            Soda = 0;
+            Water = 0;
+        }
 
         public double AmountTotal()
         {
