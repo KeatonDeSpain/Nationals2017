@@ -20,10 +20,23 @@
         private static Order MainMenu(Order order)
         {
             Console.Clear();
+            Console.WriteLine($"Order: {order.Id}\n");
             Console.WriteLine(Const.MENU);
             var response = ReadLine();
-            if (response > 0 && response < 7) { return order.AddFoodToOrder(response); }
+            if (response > 0 && response < 7) { return ConsoleAddFoodToOrder(order, response); }
             return HandleConsoleChoices(order, response);
+        }
+
+        private static Order ConsoleAddFoodToOrder(Order order, int response) 
+        {
+            var updatedOrder = order;
+            Console.WriteLine("How many would you like to buy?");
+            var numOfItems = ReadInteger(Console.ReadLine());
+            for(int i = 0; i < numOfItems; i++)
+            {
+                updatedOrder = updatedOrder.AddFoodToOrder(response);
+            }
+            return updatedOrder;
         }
         
         private static Order HandleConsoleChoices(Order order, int response)
@@ -63,6 +76,22 @@
                 return new Order() { Id = id };
             }
             return currentOrder;
+        }
+
+        private static int ReadInteger(string input)
+        {
+            input = input.ToLower().Trim();
+            try
+            {
+                int num = Int32.Parse(input);
+                if (num < 0) { throw new Exception(); }
+                return num;
+            }
+            catch
+            {
+                Console.WriteLine("Sorry that was an invalid response.\n");
+                return ReadInteger(Console.ReadLine());
+            }
         }
 
         private static int ReadLine()
